@@ -1,20 +1,38 @@
-import React, { Component } from 'react';
+// import React, { useContext } from 'react';
+// import { ThemeContext } from './../contexts/ThemeContext';
 
-class NavBar extends Component {
-    render() {
-        const { items, hendelClearList, updateItemsToShow, } = this.props;
+const NavBar = ({
+    items,
+    handelClearList,
+    updateActiveItems,
+    updateDoneItems,
+    updateAllItems,
+    updateItemsToShow
+}) => {
+    // const { isLightTheme, light, dark } = useContext(ThemeContext);
+    // const theme = isLightTheme ? light : dark;
 
-        return (
-            <>
-                <h1>Notes List</h1>
-                <h2> number of Notes   {items.length}</h2>
-                <button onClick={() => updateItemsToShow('complete')}>Show only the Done </button>
-                <button onClick={() => updateItemsToShow('active')}>Show only the Active </button>
-                <button onClick={() => updateItemsToShow('all')}>Show All Notes </button>
-                <button onClick={hendelClearList}>Claer List</button>
-            </>
-        );
-    }
+
+    return (
+        <nav
+            className="container--nav"
+        // style={{ background: theme.ui, color: theme.syntax, }}
+        >
+            <h1>Notes List</h1>
+            {items.length ? (<h1>number of Notes  {items.length}</h1>) : (<h1>
+                <span style={{ fontSize: 50 }}>&#128373;</span>
+                Are you sure?
+                <span style={{ fontSize: 50 }}>&#128527;</span></h1>)}
+            <ul
+                className="container--nav__items"
+            >
+                <li onClick={updateDoneItems}><a href="#">Show only the Done</a></li>
+                <li onClick={updateActiveItems}><a href="#">Show only the Active</a></li>
+                <li onClick={updateAllItems}><a href="#">Show All Notes</a></li>
+                <li onClick={handelClearList}><a href="#">Claer List</a></li>
+            </ul>
+        </nav>
+    );
 }
 
 export default NavBar;

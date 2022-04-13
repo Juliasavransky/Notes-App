@@ -1,138 +1,180 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid';
 import NavBar from './components/NavBar';
 import NotesInput from './components/NotesInput';
 import NotesList from './components/NotesList';
+import ThemeContextProvider from './contexts/ThemeContext';
+import ThemeToggle from './components/ThemeToggle';
+import Counter from './components/Counter';
+import Users from './components/Users';
+import usersData from './usersData.json'
+import Parent from './components/Parent';
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      item: "",
-      itemId: 0,
-      items: [],
-      done: false,
-      editItem: false,
-      itemsToShow: 'all'
-    }
-  }
+const App = () => {
+  const [item, setItem] = useState("");
+  const [itemId, setItemId] = useState(uuidv4);
 
-  hendleChange = (event) => {
-    this.setState({
-      item: event.target.value
-    })
+  const [items, setItems] = useState(() => {
+    const localData = localStorage.getItem('items');
+    return localData ? JSON.parse(localData) : []
+  });
+
+  const [done, setDone] = useState(false);
+  const [editItem, setEditItem] = useState(false);
+
+  const [status, setStatus] = useState("active");
+  const [itemsToShow, setItemsToShow] = useState([]);
+  // const [isFiltered, setIsFiltered] = useState(false);
+
+
+  const handleChange = (event) => {
+    setItem(event.target.value)
   };
 
-  hendleSubmet = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
     const newItem = {
-      itemId: this.state.itemId,
-      title: this.state.item,
-      done: this.state.done,
+      itemId: uuidv4(),
+      title: item,
+      done: done,
+      status: "active",
     };
-    const updatedItems = [newItem, ...this.state.items];
+    const updatedItems = [newItem, ...items];
 
-    this.setState({
-      item: "",
-      itemId: this.state.itemId + 1,
-      items: updatedItems,
-    });
+    setItem("");
+    setItemId(0);
+    setItems(updatedItems);
+    setStatus("active");
+
+  };
+  console.log('items', items);
+
+  useEffect(() => {
+    localStorage.setItem('items', JSON.stringify(items))
+  }, [items]);
+
+  const handelClearList = () => {
+    setItem("");
+    setItemId(0);
+    setItems([]);
+    setDone(false);
+    setEditItem(false);
+    setStatus("active");
+
   };
 
-  hendelClearList = () => {
-    this.setState({
-      item: "",
-      itemId: 0,
-      items: [],
-      done: false,
-      editItem: false,
-      itemsToShow: "all",
-    })
+  const handleDelete = (id) => {
+    const filterDelete = items.filter(item => item.itemId !== id);
+    setItems(filterDelete);
   };
 
-  hendleDelete = (id) => {
-    const filterDelete = this.state.items.filter(item => item.itemId !== id);
-
-    this.setState({
-      items: filterDelete,
-    });
-  };
-
-  hendleDone = (id) => {
-    this.setState({
-      items: this.state.items.map(item => {
-        if (item.itemId === id) {
-          return {
-            ...item,
-            done: !item.done,
-          };
-        } else {
-          return item;
-        }
-      })
-    });
+  const handleDone = (id) => {
+    setItems(items.map(item => {
+      if (item.itemId === id) {
+        return {
+          ...item,
+          done: !item.done,
+          status: "complete"
+        };
+      } else {
+        return item;
+      }
+    }))
   }
 
-  hendleEditing = (id) => {
-    const filterItems = this.state.items.filter(item => item.itemId !== id);
-    const selctedItem = this.state.items.find(item => item.itemId === id);
+  const handleEditing = (id) => {
+    const filterItems = items.filter(item => item.itemId !== id);
+    const selectedItem = items.find(item => item.itemId === id);
 
-    this.setState({
-      items: filterItems,
-      item: selctedItem.title,
-      itemId: id,
-      editItem: !this.state.editItem,
-    });
+    setItems(filterItems);
+    setItem(selectedItem.title);
+    setItemId(id);
+    setEditItem(!editItem);
+
   }
 
-  updateItemsToShow = (s) => {
-    this.setState({
-      itemsToShow: s,
-    })
+  const updateAllItems = () => {
+    const allItems = [...items];
+    setItems(allItems);
 
-    console.log(s);
+  }
+  const updateDoneItems = () => {
+    const doneItems = [...items];
+    console.log("doneItems", doneItems);
+    const updateDoneItems = doneItems.filter(item => item.done === true);
+    setItems(updateDoneItems);
+    setItemsToShow(updateDoneItems);
+    setStatus("complete")
+    console.log("updateDoneItems", updateDoneItems);
   }
 
-  render() {
-    let items = [];
 
-    if (this.state.itemsToShow === 'all') {
-      items = this.state.items;
-    } else if (this.state.itemsToShow === 'active') {
-      items = this.state.items.filter(item => !item.done);
-    } else if (this.state.itemsToShow === 'complete') {
-      items = this.state.items.filter(item => item.done);
-    }
-    console.log(this.state.itemsToShow);
-    console.log(items);
-    return (
-      <div >
-        <NavBar
-          hendelClearList={this.hendelClearList}
-          updateItemsToShow={this.updateItemsToShow}
-          items={items}
-          itemsToShow={this.state.itemsToShow}
-
-        />
-
-        <NotesInput
-          hendleChange={this.hendleChange}
-          hendleSubmet={this.hendleSubmet}
-          editItem={this.state.editItem}
-          item={this.state.item}
-
-
-        />
-        <NotesList
-          items={items}
-          done={this.state.done}
-          hendleDelete={this.hendleDelete}
-          hendleDone={this.hendleDone}
-          hendleEditing={this.hendleEditing}
-        />
-      </div>
-    );
+  const updateActiveItems = () => {
+    const activeItems = [...items]
+    console.log("doneItems", activeItems);
+    const updateActiveItemsItems = activeItems.filter(item => item.done === false);
+    setItems(updateActiveItemsItems);
+    setItemsToShow(updateActiveItemsItems);
+    setStatus("active")
+    console.log("updateActiveItemsItems", updateActiveItemsItems);
   }
+
+  const isEmpty = Object.keys(usersData).length === 0;
+
+  return (
+    <>
+      {/* <ThemeContextProvider>
+        <div
+          className="container"
+        >
+          <NavBar
+            handelClearList={handelClearList}
+            updateActiveItems={updateActiveItems}
+            updateDoneItems={updateDoneItems}
+            updateAllItems={updateAllItems}
+            items={items}
+          // updateItemsToShow={updateItemsToShow}
+
+          />
+          <ThemeToggle />
+          <NotesInput
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+            editItem={editItem}
+            item={item}
+
+
+          />
+          <NotesList
+            items={items}
+            done={done}
+            handleDelete={handleDelete}
+            handleDone={handleDone}
+            handleEditing={handleEditing}
+          />
+        </div>
+      </ThemeContextProvider> */}
+      <Counter />
+      {/* {isEmpty
+        ? <div>"The list is empty"</div>
+        :
+        usersData.map((user, index) => (
+          <Users
+            key={user.id}
+            name={user.name}
+            email={user.email}
+            num={index + 1}
+          />
+        ))
+      } */}
+      <Parent />
+    </>
+  );
 }
 
+
+
 export default App;
+
+

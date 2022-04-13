@@ -1,14 +1,114 @@
+body {
+  background-color: rgba(0, 0, 0, 0.1);
+  /* font-family: 'Dancing Script', cursive; */
+  font-family: 'Indie Flower', cursive;
+}
 .done {
-    background: #888;
-    color: #fff;
-    text-decoration: line-through;
+  background: #888;
+  color: #fff;
+  text-decoration: line-through;
 }
 
 .edit {
-    font-size: 2em;
-    color: rebeccapurple;
+  /* font-size: 1.2em; */
+  color: rebeccapurple;
 }
-.add{
-    font-size: 1.2em;
-    color: black;
+.add {
+  /* font-size: 1.2em; */
+  color: black;
+}
+
+.container {
+  border: 2px rgb(0, 102, 255) solid;
+}
+.card {
+  /* display: flex; */
+  /* font-size: 1.2rem; */
+  border: 2px red solid;
+}
+/* .card__item {
+  border: steelblue 2px solid;
+  text-align: center;
+  padding: 1.2em;
+} */
+.container--nav {
+  display: flex;
+}
+.container--nav__items {
+  display: flex;
+  margin: auto;
+  border: springgreen 1px solid;
+}
+.container--nav__items > li {
+  margin: 0 1rem;
+  list-style: none;
+}
+.container--nav__items > li > a {
+  text-decoration-line: none;
+  font-size: 2rem;
+}
+/* ******************Notebook Paper*************** */
+#paper {
+    position: relative;
+    margin: 20px auto;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #f7e496;
+    box-shadow: 0px 0px 5px 0px #888;
+    border-radius: 20px;
+  }
+#paper::before {
+  content: "";
+  width: 2px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 40px;
+  background-color: rgba(255, 0, 0, 0.6);
+}
+
+#pattern {
+  height: 100%;
+  background-image: repeating-linear-gradient(#f7e496 0px, #f7e496 24px, teal 25px);
+}
+#content {
+    padding-top: 6px;
+    padding-left: 56px;
+    padding-right: 16px;
+    line-height:200%;
+    font-size: 19px;
+    letter-spacing: 1px;
+    word-spacing: 5px;
+  }
+/* ********************************* */
+.my-masonry-grid {
+  display: flex;
+  margin-left: -30px; /* gutter size offset */
+  width: auto;
+}
+.my-masonry-grid_column {
+  padding-left: 30px; /* gutter size */
+  background-clip: padding-box;
+}
+
+/* Style your items */
+.my-masonry-grid_column > div {
+  /* change div to reference your elements you put in <Masonry> */
+  background: grey;
+  margin-bottom: 30px;
+}
+
+/* ********************************* */
+
+/* Optional, different gutter size on mobile */
+@media (max-width: 800px) {
+  .my-masonry-grid {
+    margin-left: -15px; /* gutter size offset */
+  }
+  .my-masonry-grid_column {
+    padding-left: 15px; /* gutter size offset */
+  }
+  .my-masonry-grid_column > div {
+    margin-bottom: 15px; /* space between items */
+  }
 }

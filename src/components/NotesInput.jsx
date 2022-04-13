@@ -1,27 +1,35 @@
-import React, { Component } from 'react';
+// import React, { useContext } from 'react';
+// import { ThemeContext } from './../contexts/ThemeContext';
 
-class NotesInput extends Component {
-    render() {
-        const { hendleChange, item, hendleSubmet, editItem, } = this.props;
 
-        return (
-            <form >
-                <textarea
-                    value={item}
-                    onChange={hendleChange}
-                    placeholder="Add a note">
-                </textarea>
+const NotesInput = ({ handleChange, item, handleSubmit, editItem, }) => {
 
-                <button
-                    className={editItem ? "edit" : ""}
-                    onClick={hendleSubmet}
-                >
-                    {editItem ? "Edit Item" : 'Add Item'}
-                </button>
-            </form>
-        );
-    }
+    // const { isLightTheme, light, dark } = useContext(ThemeContext);
+    // const theme = isLightTheme ? light : dark;
+    return (
+        <form
+            className=""
+        // style={{ background: theme.bg, color: theme.ui, }}
+        >
+            <input
+                required
+                value={item}
+                type="text"
+                onChange={handleChange}
+                placeholder="Add a note">
+            </input>
 
+            <button
+                className={editItem ? "edit" : ""}
+                onClick={handleSubmit}
+                type="submit"
+            >
+                {editItem ? "Edit Item" : 'Add Item'}
+            </button>
+        </form>
+    );
 }
 
+
 export default NotesInput;
+
